@@ -457,7 +457,7 @@
 					"$(PROJECT_DIR)/ImageDSPUtils",
 				);
 				INFOPLIST_FILE = ImageLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CalebKyle.ImageLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -479,7 +479,7 @@
 					"$(PROJECT_DIR)/ImageDSPUtils",
 				);
 				INFOPLIST_FILE = ImageLab/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CalebKyle.ImageLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";

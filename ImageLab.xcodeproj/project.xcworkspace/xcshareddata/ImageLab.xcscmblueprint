@@ -1,30 +1,30 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5FCA73B574EFEBCAB86D11D50E85438B88775138",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CF47BFBC4BABA054DA086E1180DDB76B9F9A31ED",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "70A0109BB415E474A2D46FE33C268B076C6B554C" : 9223372036854775807,
-    "5FCA73B574EFEBCAB86D11D50E85438B88775138" : 9223372036854775807
+    "CF47BFBC4BABA054DA086E1180DDB76B9F9A31ED" : 9223372036854775807
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "543AFE58-39F8-47CC-B652-4D11129751D6",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9A9103EC-D5A7-4701-B117-7C3CC00D8790",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "70A0109BB415E474A2D46FE33C268B076C6B554C" : "ImageLab\/ImageDSPUtils\/",
-    "5FCA73B574EFEBCAB86D11D50E85438B88775138" : "ImageLab\/"
+    "70A0109BB415E474A2D46FE33C268B076C6B554C" : "cse5323-assignment4\/ImageDSPUtils\/",
+    "CF47BFBC4BABA054DA086E1180DDB76B9F9A31ED" : "cse5323-assignment4\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "ImageLab",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ImageLab.xcodeproj",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/CT-Kyle\/ImageLab.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5FCA73B574EFEBCAB86D11D50E85438B88775138"
-    },
-    {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/SMU-MSLC-2016\/ImageDSPUtils.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/lukeoglesbee\/ImageDSPUtils.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "70A0109BB415E474A2D46FE33C268B076C6B554C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lukeoglesbee\/cse5323-assignment4.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CF47BFBC4BABA054DA086E1180DDB76B9F9A31ED"
     }
   ]
 }

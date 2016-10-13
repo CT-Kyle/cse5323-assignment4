@@ -33,7 +33,7 @@ class ViewController: UIViewController   {
         
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.front)
-        self.videoManager.setPreset("AVCaptureSessionPresetHigh")
+        self.videoManager.setPreset("AVCaptureSessionPresetMedium")
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
@@ -56,10 +56,10 @@ class ViewController: UIViewController   {
     func processImage(_ inputImage:CIImage) -> CIImage{
         
         // detect faces
-        let f = getFaces(inputImage)
+//        let f = getFaces(inputImage)
         
         // if no faces, just return original image
-        if f.count == 0 { return inputImage }
+//        if f.count == 0 { return inputImage }
         
         var retImage = inputImage
         
@@ -81,7 +81,7 @@ class ViewController: UIViewController   {
         // or any bounds to only process a certain bounding region in OpenCV
         self.bridge.setTransforms(self.videoManager.transform)
         self.bridge.setImage(retImage,
-                             withBounds: f[0].bounds, // the first face bounds
+                             withBounds: retImage.extent, // the first face bounds
                              andContext: self.videoManager.getCIContext())
         
         self.bridge.processImage()
@@ -131,8 +131,6 @@ class ViewController: UIViewController   {
         
     }
     
-    
-    
     @IBAction func swipeRecognized(_ sender: UISwipeGestureRecognizer) {
         switch sender.direction {
         case UISwipeGestureRecognizerDirection.left:
@@ -159,14 +157,14 @@ class ViewController: UIViewController   {
     }
     
     @IBAction func switchCamera(_ sender: AnyObject) {
-        self.videoManager.setFPS(desiredFrameRate: 5.0)
+//        self.videoManager.setFPS(desiredFrameRate: 5.0)
 
         self.videoManager.toggleCameraPosition()
     }
     
     @IBAction func setFlashLevel(_ sender: UISlider) {
         if(sender.value>0.0){
-            self.videoManager.turnOnFlashwithLevel(sender.value)
+            _ = self.videoManager.turnOnFlashwithLevel(sender.value)
         }
         else if(sender.value==0.0){
             self.videoManager.turnOffFlash()

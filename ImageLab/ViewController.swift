@@ -27,17 +27,21 @@ class ViewController: UIViewController   {
         
         self.view.backgroundColor = nil
         
+        self.bridge.loadHaarCascade(withFilename: "nose")
+        
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.front)
+        self.videoManager.setPreset("AVCaptureSessionPresetHigh")
+        
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
-        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh]
+        let optsDetector = [CIDetectorAccuracy:CIDetectorAccuracyHigh,CIDetectorTracking:true] as [String : Any]
         
         // setup a face detector in swift
         self.detector = CIDetector(ofType: CIDetectorTypeFace,
-                                  context: self.videoManager.getCIContext(), // perform on the GPU is possible
-                                  options: optsDetector)
+                                   context: self.videoManager.getCIContext(), // perform on the GPU is possible
+            options: (optsDetector as [String : AnyObject]))
         
         self.videoManager.setProcessingBlock(self.processImage)
         
@@ -68,6 +72,8 @@ class ViewController: UIViewController   {
         let pic2 = CIImage(image: UIImage(named: "Mouth")!)
         
         for f in features {
+            print("\n Bounds %g", f.bounds)
+            
             if (f.hasLeftEyePosition) {
                 
                 var leftEyeImage = pic

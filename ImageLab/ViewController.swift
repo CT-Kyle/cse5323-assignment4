@@ -47,15 +47,17 @@ class ViewController: UIViewController   {
     
     }
     
-    //MARK: Setup filtering
-    func setupFilters(){
-        filters = []
+    //MARK: Process image output
+    func processImage(_ inputImage:CIImage) -> CIImage{
         
-        let filterPinch = CIFilter(name:"CIBumpDistortion")!
-        filterPinch.setValue(-0.5, forKey: "inputScale")
-        filterPinch.setValue(75, forKey: "inputRadius")
-        filters.append(filterPinch)
+        // detect faces
+        let f = getFaces(inputImage)
         
+        // if no faces, just return original image
+        if f.count == 0 { return inputImage }
+        
+        //otherwise apply the filters to the faces
+        return applyFiltersToFaces(inputImage, features: f)
     }
 
     
@@ -70,6 +72,7 @@ class ViewController: UIViewController   {
                 
                 var leftEyeImage = pic
                 let scale = CGAffineTransform(scaleX: 0.40, y: 0.40)
+                
                 let translation = CGAffineTransform(translationX: f.leftEyePosition.x - 140, y: f.leftEyePosition.y - 100)
                 let affineMatrix = scale.concatenating(translation)
 
@@ -84,7 +87,7 @@ class ViewController: UIViewController   {
                 retImage = filterEye.outputImage!
                 
                 
-                NSLog("Left eye %g %g", f.leftEyePosition.x, f.leftEyePosition.y);
+                NSLog("\nLeft eye %g %g", f.leftEyePosition.x, f.leftEyePosition.y);
             }
             if (f.hasRightEyePosition) {
                 var rightEyeImage = pic
@@ -103,7 +106,7 @@ class ViewController: UIViewController   {
                 retImage = filterEye.outputImage!
                 
                 
-                NSLog("Right eye %g %g", f.rightEyePosition.x, f.rightEyePosition.y);
+                NSLog("\nRight eye %g %g", f.rightEyePosition.x, f.rightEyePosition.y);
             }
             if (f.hasMouthPosition) {
                 var mouthImage = pic2
@@ -122,7 +125,7 @@ class ViewController: UIViewController   {
                 retImage = filterMouth.outputImage!
                 
                 
-                NSLog("Mouth %g %g", f.mouthPosition.x, f.mouthPosition.y);
+                NSLog("\nMouth     %g %g", f.mouthPosition.x, f.mouthPosition.y);
             }
         }
         return retImage
@@ -137,20 +140,8 @@ class ViewController: UIViewController   {
         
     }
     
-    func processImage(_ inputImage:CIImage) -> CIImage{
-        
-        // detect faces
-        let f = getFaces(inputImage)
-        
-        // if no faces, just return original image
-        if f.count == 0 { return inputImage }
-        
-        //otherwise apply the filters to the faces
-        return applyFiltersToFaces(inputImage, features: f)
-    }
     
-    
-//    //MARK: Convenience Methods for UI Flash and Camera Toggle
+//    //MARK: Camera Toggle
  
     @IBAction func switchCamera(_ sender: AnyObject) {
         self.videoManager.toggleCameraPosition()

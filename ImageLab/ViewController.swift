@@ -26,7 +26,6 @@ class ViewController: UIViewController   {
         super.viewDidLoad()
         
         self.view.backgroundColor = nil
-        self.setupFilters()
         
         self.videoManager = VideoAnalgesic.sharedInstance
         self.videoManager.setCameraPosition(AVCaptureDevicePosition.front)
@@ -58,23 +57,72 @@ class ViewController: UIViewController   {
         filters.append(filterPinch)
         
     }
+
     
     //MARK: Apply filters and apply feature detectors
     func applyFiltersToFaces(_ inputImage:CIImage,features:[CIFaceFeature])->CIImage{
         var retImage = inputImage
-        var filterCenter = CGPoint()
+        let pic = CIImage(image: UIImage(named: "Triangle")!)
+        let pic2 = CIImage(image: UIImage(named: "Mouth")!)
         
         for f in features {
-            //set where to apply filter
-            filterCenter.x = f.bounds.midX
-            filterCenter.y = f.bounds.midY
-            
-            //do for each filter (assumes all filters have property, "inputCenter")
-            for filt in filters{
-                filt.setValue(retImage, forKey: kCIInputImageKey)
-                filt.setValue(CIVector(cgPoint: filterCenter), forKey: "inputCenter")
-                // could also manipualte the radius of the filter based on face size!
-                retImage = filt.outputImage!
+            if (f.hasLeftEyePosition) {
+                
+                var leftEyeImage = pic
+                let scale = CGAffineTransform(scaleX: 0.40, y: 0.40)
+                let translation = CGAffineTransform(translationX: f.leftEyePosition.x - 140, y: f.leftEyePosition.y - 100)
+                let affineMatrix = scale.concatenating(translation)
+
+                let transformFilter = CIFilter(name: "CIAffineTransform")!
+                transformFilter.setValue(leftEyeImage, forKey: "inputImage")
+                transformFilter.setValue(NSValue(cgAffineTransform: affineMatrix), forKey: "inputTransform")
+                leftEyeImage = transformFilter.outputImage!
+                
+                let filterEye = CIFilter(name:"CISourceOverCompositing")!
+                filterEye.setValue(leftEyeImage, forKey: kCIInputImageKey)
+                filterEye.setValue(retImage, forKey: kCIInputBackgroundImageKey)
+                retImage = filterEye.outputImage!
+                
+                
+                NSLog("Left eye %g %g", f.leftEyePosition.x, f.leftEyePosition.y);
+            }
+            if (f.hasRightEyePosition) {
+                var rightEyeImage = pic
+                let scale = CGAffineTransform(scaleX: 0.40, y: 0.40)
+                let translation = CGAffineTransform(translationX: f.rightEyePosition.x - 140, y: f.rightEyePosition.y - 100)
+                let affineMatrix = scale.concatenating(translation)
+                
+                let transformFilter = CIFilter(name: "CIAffineTransform")!
+                transformFilter.setValue(rightEyeImage, forKey: "inputImage")
+                transformFilter.setValue(NSValue(cgAffineTransform: affineMatrix), forKey: "inputTransform")
+                rightEyeImage = transformFilter.outputImage!
+                
+                let filterEye = CIFilter(name:"CISourceOverCompositing")!
+                filterEye.setValue(rightEyeImage, forKey: kCIInputImageKey)
+                filterEye.setValue(retImage, forKey: kCIInputBackgroundImageKey)
+                retImage = filterEye.outputImage!
+                
+                
+                NSLog("Right eye %g %g", f.rightEyePosition.x, f.rightEyePosition.y);
+            }
+            if (f.hasMouthPosition) {
+                var mouthImage = pic2
+                let scale = CGAffineTransform(scaleX: 0.75, y: 0.75)
+                let translation = CGAffineTransform(translationX: f.mouthPosition.x - 140, y: f.mouthPosition.y - 225)
+                let affineMatrix = scale.concatenating(translation)
+                
+                let transformFilter = CIFilter(name: "CIAffineTransform")!
+                transformFilter.setValue(mouthImage, forKey: "inputImage")
+                transformFilter.setValue(NSValue(cgAffineTransform: affineMatrix), forKey: "inputTransform")
+                mouthImage = transformFilter.outputImage!
+                
+                let filterMouth = CIFilter(name:"CISourceOverCompositing")!
+                filterMouth.setValue(mouthImage, forKey: kCIInputImageKey)
+                filterMouth.setValue(retImage, forKey: kCIInputBackgroundImageKey)
+                retImage = filterMouth.outputImage!
+                
+                
+                NSLog("Mouth %g %g", f.mouthPosition.x, f.mouthPosition.y);
             }
         }
         return retImage

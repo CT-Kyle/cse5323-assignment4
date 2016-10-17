@@ -9,8 +9,8 @@
 #import "OpenCVBridgeSub.h"
 #import "AVFoundation/AVFoundation.h"
 
-#define NOISE_FILTER 0.05
-#define BPM_DELTA_SECONDS 15.0
+#define NOISE_FILTER 0.02
+#define BPM_DELTA_SECONDS 10.0
 #define TREND_MIN 2
 using namespace cv;
 

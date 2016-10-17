@@ -27,13 +27,12 @@ class ViewController: UIViewController   {
         super.viewDidLoad()
         
         self.view.backgroundColor = nil
-        self.setupFilters()
         
         self.bridge.loadHaarCascade(withFilename: "nose")
         
         self.videoManager = VideoAnalgesic.sharedInstance
-        self.videoManager.setCameraPosition(AVCaptureDevicePosition.front)
-        self.videoManager.setPreset("AVCaptureSessionPresetMedium")
+        self.videoManager.setCameraPosition(AVCaptureDevicePosition.back)
+        self.videoManager.setPreset("AVCaptureSessionPresetLow")
         
         // create dictionary for face detection
         // HINT: you need to manipulate these proerties for better face detection efficiency
@@ -54,12 +53,6 @@ class ViewController: UIViewController   {
     
     //MARK: Process image output
     func processImage(_ inputImage:CIImage) -> CIImage{
-        
-        // detect faces
-//        let f = getFaces(inputImage)
-        
-        // if no faces, just return original image
-//        if f.count == 0 { return inputImage }
         
         var retImage = inputImage
         
@@ -88,47 +81,6 @@ class ViewController: UIViewController   {
         retImage = self.bridge.getImageComposite() // get back opencv processed part of the image (overlayed on original)
         
         return retImage
-    }
-    
-    //MARK: Setup filtering
-    func setupFilters(){
-        filters = []
-        
-        let filterPinch = CIFilter(name:"CIBumpDistortion")!
-        filterPinch.setValue(-0.5, forKey: "inputScale")
-        filterPinch.setValue(75, forKey: "inputRadius")
-        filters.append(filterPinch)
-        
-    }
-    
-    //MARK: Apply filters and apply feature detectors
-    func applyFiltersToFaces(_ inputImage:CIImage,features:[CIFaceFeature])->CIImage{
-        var retImage = inputImage
-        var filterCenter = CGPoint()
-        
-        for f in features {
-            //set where to apply filter
-            filterCenter.x = f.bounds.midX
-            filterCenter.y = f.bounds.midY
-            
-            //do for each filter (assumes all filters have property, "inputCenter")
-            for filt in filters{
-                filt.setValue(retImage, forKey: kCIInputImageKey)
-                filt.setValue(CIVector(cgPoint: filterCenter), forKey: "inputCenter")
-                // could also manipualte the radius of the filter based on face size!
-                retImage = filt.outputImage!
-            }
-        }
-        return retImage
-    }
-    
-    func getFaces(_ img:CIImage) -> [CIFaceFeature]{
-        // this ungodly mess makes sure the image is the correct orientation
-        //let optsFace = [CIDetectorImageOrientation:self.videoManager.getImageOrientationFromUIOrientation(UIApplication.sharedApplication().statusBarOrientation)]
-        let optsFace = [CIDetectorImageOrientation:self.videoManager.ciOrientation]
-        // get Face Features
-        return self.detector.features(in: img, options: optsFace) as! [CIFaceFeature]
-        
     }
     
     @IBAction func swipeRecognized(_ sender: UISwipeGestureRecognizer) {

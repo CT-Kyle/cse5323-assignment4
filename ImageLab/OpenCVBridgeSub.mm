@@ -11,13 +11,15 @@
 
 #define NOISE_FILTER 0.05
 #define BPM_DELTA_SECONDS 15.0
-
+#define TREND_MIN 2
 using namespace cv;
 
 @interface OpenCVBridgeSub()
 @property (nonatomic) cv::Mat image;
 @property float lastVal;
 @property float lastVal2;
+@property int redTrend;
+@property int downTrendCount;
 @property bool upLast;
 @property (strong, nonatomic) NSMutableArray* beatTimes;
 @end
@@ -41,13 +43,23 @@ using namespace cv;
     if (fabsf(dif) < NOISE_FILTER) {
         // Do nothing
     } else if (dif > 0.0) {
-        self.upLast = true;
+        NSLog(@"up");
+        self.redTrend = self.redTrend < 0 ? 1 : self.redTrend += 1;
     } else {
-        if (self.upLast == true) {
+        NSLog(@"down");
+        
+        if (self.redTrend >= TREND_MIN) {
+            self.redTrend = -1;
+        } else  if (self.redTrend < 0) {
+            self.redTrend -= 1;
+        } else {
+            self.redTrend = 0;
+        }
+        
+        if (self.redTrend == -TREND_MIN) {
             NSLog(@"ba-dump");
             [self.beatTimes addObject:[NSDate date]];
         }
-        self.upLast = false;
     }
     
     sprintf(text, "%.1f", [self getBPM]);
@@ -86,6 +98,7 @@ using namespace cv;
     self = [super init];
     self.lastVal = 0.0;
     self.lastVal2 = 0.0;
+    self.redTrend = 0;
     self.upLast = true;
     return self;
 }

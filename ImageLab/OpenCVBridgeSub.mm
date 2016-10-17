@@ -40,6 +40,8 @@ using namespace cv;
     float rVal = ((float)avgPixelIntensity.val[2] + self.lastVal + self.lastVal2) / 3.0;
     float dif = rVal - self.lastVal;
     
+    bool didBeat = false;
+    
     if (fabsf(dif) < NOISE_FILTER) {
         // Do nothing
     } else if (dif > 0.0) {
@@ -58,12 +60,18 @@ using namespace cv;
         
         if (self.redTrend == -TREND_MIN) {
             NSLog(@"ba-dump");
+            didBeat = true;
             [self.beatTimes addObject:[NSDate date]];
         }
     }
     
-    sprintf(text, "%.1f", [self getBPM]);
-    cv::putText(image, text, cv::Point(30, 30), FONT_HERSHEY_PLAIN, 1.25, Scalar::all(255), 1, 2);
+    if (didBeat) {
+        sprintf(text, "%.1f beat", [self getBPM]);
+    } else {
+        sprintf(text, "%.1f", [self getBPM]);
+    }
+    
+    cv::putText(image, text, cv::Point(30, 30), FONT_HERSHEY_PLAIN, 0.80, Scalar::all(255), 1, 2);
     
     self.lastVal2 = self.lastVal;
     self.lastVal = rVal;

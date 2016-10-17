@@ -9,9 +9,8 @@
 #import "OpenCVBridgeSub.h"
 #import "AVFoundation/AVFoundation.h"
 
-#define BUFFER_SIZE 1024
-#define WINDOW_SIZE 12
-
+#define NOISE_FILTER 0.05
+#define BPM_DELTA_SECONDS 15.0
 
 using namespace cv;
 
@@ -20,9 +19,11 @@ using namespace cv;
 @property float lastVal;
 @property float lastVal2;
 @property bool upLast;
+@property (strong, nonatomic) NSMutableArray* beatTimes;
 @end
 
 @implementation OpenCVBridgeSub
+@synthesize beatTimes;
 @dynamic image;
 
 -(void)processImage{
@@ -36,27 +37,49 @@ using namespace cv;
     
     float rVal = ((float)avgPixelIntensity.val[2] + self.lastVal + self.lastVal2) / 3.0;
     float dif = rVal - self.lastVal;
-    float noiseFilter = 0.02;
-    if (fabsf(dif) < noiseFilter) {
+    
+    if (fabsf(dif) < NOISE_FILTER) {
         // Do nothing
     } else if (dif > 0.0) {
-        NSLog(@"up");
-        sprintf(text,"");
-        cv::putText(image, text, cv::Point(100, 100), FONT_HERSHEY_PLAIN, 1.25, Scalar::all(255), 1, 2);
         self.upLast = true;
     } else {
-        NSLog(@"down");
         if (self.upLast == true) {
-            sprintf(text,"Ba-bump");
-            cv::putText(image, text, cv::Point(100, 100), FONT_HERSHEY_PLAIN, 1.25, Scalar::all(255), 1, 2);
+            NSLog(@"ba-dump");
+            [self.beatTimes addObject:[NSDate date]];
         }
         self.upLast = false;
     }
+    
+    sprintf(text, "%.1f", [self getBPM]);
+    cv::putText(image, text, cv::Point(30, 30), FONT_HERSHEY_PLAIN, 1.25, Scalar::all(255), 1, 2);
     
     self.lastVal2 = self.lastVal;
     self.lastVal = rVal;
     
     self.image = image;
+}
+
+-(NSMutableArray*) beatTimes {
+    if (beatTimes == nil) {
+        beatTimes = [[NSMutableArray alloc] init];
+    }
+    return beatTimes;
+}
+
+-(float) getBPM {
+    NSDate* lastBeat = self.beatTimes.lastObject;
+    NSTimeInterval elapsedTime = 1.0;
+    
+    int i = (int)[self.beatTimes count] - 2;
+    
+    for (; i >= 0; --i) {
+        elapsedTime = [lastBeat timeIntervalSinceDate:self.beatTimes[i]];
+        if (elapsedTime > BPM_DELTA_SECONDS) {
+            break;
+        }
+    }
+    
+    return ([self.beatTimes count] - i - 1) * 60.0 / elapsedTime;
 }
 
 -(instancetype) init {

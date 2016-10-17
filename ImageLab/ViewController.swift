@@ -26,6 +26,7 @@ class ViewController: UIViewController   {
         super.viewDidLoad()
         
         self.view.backgroundColor = nil
+        self.setupFilters()
         
         self.bridge.loadHaarCascade(withFilename: "nose")
         
@@ -65,15 +66,35 @@ class ViewController: UIViewController   {
     }
 
     
+    //MARK: Setup filtering
+    func setupFilters(){
+        filters = []
+        let filterPinch = CIFilter(name:"CIHueAdjust")!
+        filters.append(filterPinch)
+        
+    }
+    
     //MARK: Apply filters and apply feature detectors
     func applyFiltersToFaces(_ inputImage:CIImage,features:[CIFaceFeature])->CIImage{
         var retImage = inputImage
         let pic = CIImage(image: UIImage(named: "Triangle")!)
         let pic2 = CIImage(image: UIImage(named: "Mouth")!)
+        var filterCenter = CGPoint()
         
         for f in features {
             print("\n Bounds %g", f.bounds)
+            //set where to apply filter
+            filterCenter.x = f.bounds.midX
+            filterCenter.y = f.bounds.midY
+            print("\nx:\ty:", filterCenter.x, filterCenter.y)
             
+            //do for each filter (assumes all filters have property, "inputCenter")
+            for filt in filters{
+                filt.setValue(retImage, forKey: kCIInputImageKey)
+                filt.setValue(0.5, forKey: "inputAngle")
+                retImage = filt.outputImage!
+            }
+
             if (f.hasLeftEyePosition) {
                 
                 var leftEyeImage = pic
@@ -91,7 +112,6 @@ class ViewController: UIViewController   {
                 filterEye.setValue(leftEyeImage, forKey: kCIInputImageKey)
                 filterEye.setValue(retImage, forKey: kCIInputBackgroundImageKey)
                 retImage = filterEye.outputImage!
-                
                 
                 NSLog("\nLeft eye %g %g", f.leftEyePosition.x, f.leftEyePosition.y);
             }

@@ -18,10 +18,6 @@ class ViewController: UIViewController   {
     var detector:CIDetector! = nil
     let bridge = OpenCVBridgeSub()
     
-    //MARK: Outlets in view
-    @IBOutlet weak var flashSlider: UISlider!
-    @IBOutlet weak var stageLabel: UILabel!
-    
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,45 +79,24 @@ class ViewController: UIViewController   {
         return retImage
     }
     
-    @IBAction func swipeRecognized(_ sender: UISwipeGestureRecognizer) {
-        switch sender.direction {
-        case UISwipeGestureRecognizerDirection.left:
-            self.bridge.processType += 1
-        case UISwipeGestureRecognizerDirection.right:
-            self.bridge.processType -= 1
-        default:
-            break
-            
-        }
-        
-        stageLabel.text = "Stage: \(self.bridge.processType)"
-
-    }
-    
     //MARK: Convenience Methods for UI Flash and Camera Toggle
     @IBAction func flash(_ sender: AnyObject) {
         if(self.videoManager.toggleFlash()){
-            self.flashSlider.value = 1.0
+            _ = self.videoManager.turnOnFlashwithLevel(1.0)
         }
         else{
-            self.flashSlider.value = 0.0
-        }
-    }
-    
-    @IBAction func switchCamera(_ sender: AnyObject) {
-//        self.videoManager.setFPS(desiredFrameRate: 5.0)
-
-        self.videoManager.toggleCameraPosition()
-    }
-    
-    @IBAction func setFlashLevel(_ sender: UISlider) {
-        if(sender.value>0.0){
-            _ = self.videoManager.turnOnFlashwithLevel(sender.value)
-        }
-        else if(sender.value==0.0){
             self.videoManager.turnOffFlash()
         }
     }
+    
+//    @IBAction func setFlashLevel(_ sender: UISlider) {
+//        if(sender.value>0.0){
+//            _ = self.videoManager.turnOnFlashwithLevel(sender.value)
+//        }
+//        else if(sender.value==0.0){
+//            self.videoManager.turnOffFlash()
+//        }
+//    }
 
    
 }
